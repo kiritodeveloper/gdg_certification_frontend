@@ -278,12 +278,16 @@ export default function CertificatesPage() {
   };
 
   const downloadTemplate = () => {
-    const csv = 'Nombre completo,Email,Fecha de emisión,Descripción\nMaría García López,maria@ejemplo.com,2026-07-12,120 horas lectivas\nJuan Pérez Ruiz,juan@ejemplo.com,,\n';
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    // Genera un archivo TSV (tab-separated) que Excel abre correctamente como .xls
+    const header = 'Nombre completo\tEmail\tFecha de emisión\tDescripción';
+    const row1 = 'María García López\tmaria@ejemplo.com\t2026-07-12\t120 horas lectivas';
+    const row2 = 'Juan Pérez Ruiz\tjuan@ejemplo.com\t\t';
+    const content = header + '\n' + row1 + '\n' + row2;
+    const blob = new Blob(['\uFEFF' + content], { type: 'text/tab-separated-values;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'plantilla_participantes.csv';
+    a.download = 'plantilla_participantes.xls';
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -591,7 +595,7 @@ export default function CertificatesPage() {
         <div className="space-y-5">
           {/* Info banner */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-            <p className="font-medium mb-1">Formato del Excel requerido (.xlsx o .csv):</p>
+            <p className="font-medium mb-1">Formato del archivo requerido (.xlsx):</p>
             <p className="text-blue-600">
               Columna A: <strong>Nombre completo</strong> | Columna B: <strong>Email</strong> | Columna C: Fecha (opcional) | Columna D: Descripción (opcional)
             </p>
@@ -600,7 +604,7 @@ export default function CertificatesPage() {
               onClick={downloadTemplate}
               className="mt-2 text-xs font-semibold text-blue-700 underline hover:text-blue-900 cursor-pointer"
             >
-              Descargar plantilla de ejemplo (.csv)
+              Descargar plantilla de ejemplo
             </button>
           </div>
 
@@ -672,7 +676,7 @@ export default function CertificatesPage() {
                   <p className="text-sm text-slate-500">
                     Haz clic para seleccionar un archivo
                   </p>
-                  <p className="text-xs text-slate-400 mt-1">.xlsx, .xls o .csv</p>
+                  <p className="text-xs text-slate-400 mt-1">.xlsx (recomendado) o .csv</p>
                 </>
               )}
             </div>

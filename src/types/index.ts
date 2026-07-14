@@ -104,3 +104,14 @@ export interface VerifyResponse {
   message?: string;
   certificate?: Partial<Certificate>;
 }
+
+export interface PublicCertificate {
+  id: number;
+  nombre_completo: string;
+  evento_id: number;
+  evento_nombre: string;
+  fecha_emision: string;
+  descripcion: string;
+  codigo_verif: string;
+  enviado: boolean;
+}

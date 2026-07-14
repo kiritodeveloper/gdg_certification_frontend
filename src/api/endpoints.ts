@@ -14,6 +14,7 @@ import type {
   EventPayload,
   Speaker,
   SpeakerPayload,
+  PublicCertificate,
 } from '../types';
 
 /* ── Auth ─────────────────────────────────────────── */
@@ -113,6 +114,34 @@ export const certApi = {
 
   verify: (code: string) =>
     api.get<VerifyResponse>(`/certificates/verify/${code}`).then((r) => r.data),
+
+  // Portal público (sin auth)
+  publicLookup: (email: string) =>
+    api
+      .post<{ found: boolean; message?: string; certificates?: PublicCertificate[]; total?: number }>(
+        '/certificates/public/lookup',
+        { email }
+      )
+      .then((r) => r.data),
+
+  publicDownloadUrl: (certId: number, email: string) =>
+    `/api/certificates/public/download/${certId}?email=${encodeURIComponent(email)}`,
+
+  // Activación por código (sin auth) — genera y descarga PDF
+  publicActivateUrl: (code: string) =>
+    `/api/certificates/public/activate/${code}`,
+
+  publicActivateInfo: (code: string) =>
+    api.get<{ valid: boolean; message?: string; certificate?: { nombre_completo: string; evento_nombre: string; fecha_emision: string; descripcion: string; codigo_verif: string } }>(
+      `/certificates/public/activate/${code}/info`
+    ).then((r) => r.data),
+
+  // Búsqueda pública por nombre o email (sin auth)
+  publicSearch: (query: string) =>
+    api.post<{ found: boolean; message?: string; certificates?: Array<{ id: number; nombre_completo: string; email: string; evento_id: number; evento_nombre: string; fecha_emision: string; descripcion: string; codigo_verif: string; enviado: boolean }>; total?: number }>(
+      '/certificates/public/search',
+      { query }
+    ).then((r) => r.data),
 
   importExcel: (file: File, eventoId: number, fechaEmision?: string) => {
     const formData = new FormData();

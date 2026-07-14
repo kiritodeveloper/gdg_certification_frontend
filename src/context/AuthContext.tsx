@@ -63,9 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading: false,
       });
     } catch {
-      // Solo hacer logout si el servidor respondió con 401 (token inválido/expirado)
-      // No hacer logout si es error de red (servidor caído, CORS, etc.)
-      setState((s) => ({ ...s, loading: false }));
+      // Si falla la verificación (401, error de red, etc.), limpiar estado de auth
+      // sin hacer logout forzoso — las páginas públicas siguen accesibles
+      setState({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        isAdmin: false,
+        loading: false,
+      });
     }
   }, []);
 

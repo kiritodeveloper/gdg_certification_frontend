@@ -20,8 +20,13 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      // Evitar redirección si ya estamos en login
-      if (window.location.pathname !== '/login') {
+      // Solo redirigir al login si NO estamos en una página pública
+      const publicPrefixes = ['/', '/inicio', '/login', '/ver-certificado', '/validar-certificado', '/activate'];
+      const path = window.location.pathname;
+      const isPublic = publicPrefixes.some(
+        (p) => path === p || path.startsWith(p + '/')
+      );
+      if (!isPublic) {
         window.location.href = '/login';
       }
     }
