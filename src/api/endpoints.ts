@@ -124,12 +124,16 @@ export const certApi = {
       )
       .then((r) => r.data),
 
-  publicDownloadUrl: (certId: number, email: string) =>
-    `/api/certificates/public/download/${certId}?email=${encodeURIComponent(email)}`,
+  publicDownloadUrl: (certId: number, email: string) => {
+    const base = import.meta.env.VITE_API_URL || '/api';
+    return `${base}/certificates/public/download/${certId}?email=${encodeURIComponent(email)}`;
+  },
 
   // Activación por código (sin auth) — genera y descarga PDF
-  publicActivateUrl: (code: string) =>
-    `/api/certificates/public/activate/${code}`,
+  publicActivateUrl: (code: string) => {
+    const base = import.meta.env.VITE_API_URL || '/api';
+    return `${base}/certificates/public/activate/${code}`;
+  },
 
   publicActivateInfo: (code: string) =>
     api.get<{ valid: boolean; message?: string; certificate?: { nombre_completo: string; evento_nombre: string; fecha_emision: string; descripcion: string; codigo_verif: string } }>(
