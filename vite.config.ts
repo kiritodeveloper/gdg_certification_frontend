@@ -8,7 +8,16 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://gdg-certification-back.onrender.com',
+        target: 'http://192.168.100.113:5000',
+        changeOrigin: true,
+      },
+    },
+  },
+  preview: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://192.168.100.113:5000',
         changeOrigin: true,
       },
     },
